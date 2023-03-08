@@ -41,7 +41,7 @@ func NewCmdIndex() *cobra.Command {
 
 				// split indices into chunks
 				chunks := make([]*core.IndicesRequest, 0)
-				chunkSize := 32
+				chunkSize := 128
 				for i := 0; i < len(indices.Items); i += chunkSize {
 					end := i + chunkSize
 					if end > len(indices.Items) {
