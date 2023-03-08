@@ -5,7 +5,7 @@ A command line interface for [Botastic](https://developers.pando.im/references/b
 ## Installation
 
 ```bash
-go install github.com/pandodao/botastic-cli
+go install github.com/pandodao/botastic-cli@latest
 ```
 
 ## Set Environment Variables
