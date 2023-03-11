@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -41,6 +42,10 @@ func createIndices(ctx context.Context, payload *core.IndicesRequest) ([]byte, e
 		return nil, err
 	}
 
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("failed to create indices: " + string(body))
+	}
+
 	return body, err
 }
 
@@ -70,6 +75,10 @@ func searchIndices(ctx context.Context, query string, n int) (*core.SearchResult
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("failed to search indices: " + string(body))
 	}
 
 	result := &core.SearchResult{}
