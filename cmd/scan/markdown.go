@@ -18,7 +18,77 @@ const (
 	BlockTypeUnknown
 )
 
-func extractMardownFile(file string) ([]*core.IndicesRequestItem, error) {
+func extractMardownFileByParagraph(file string) ([]*core.IndicesRequestItem, error) {
+	var sections []string
+
+	bytes, err := os.ReadFile(file)
+	if err != nil {
+		return nil, err
+	}
+
+	lines := strings.Split(string(bytes), "\n")
+	ix := 0
+	section := ""
+	for ix < len(lines) {
+		line := strings.TrimSpace(lines[ix])
+		if line == "" {
+			// ignore empty line
+			ix += 1
+			continue
+		}
+
+		var currentBlockType int
+		// check header
+		headerRegex := regexp.MustCompile("^#{1,6} (.*)")
+		headerMatch := headerRegex.FindStringSubmatch(line)
+		if headerMatch != nil {
+			// reach a title
+			header := removeMarkdownSyntax(headerMatch[0])
+			// save current section and start a new one
+			if section != "" {
+				sections = append(sections, section)
+			}
+			section = header
+			ix += 1
+			continue
+		}
+
+		// other lines
+		currentBlockType = recognizeBlockType(line)
+		if currentBlockType == BlockTypeUnknown {
+			ix += 1
+			continue
+		}
+
+		line = removeMarkdownSyntax(line)
+		if line == "" {
+			ix += 1
+			continue
+		}
+
+		section = fmt.Sprintf("%s\n%s", section, line)
+		ix += 1
+	}
+
+	if section != "" {
+		sections = append(sections, section)
+	}
+
+	items := make([]*core.IndicesRequestItem, len(sections))
+	for ix, sec := range sections {
+		// fmt.Printf("sec: %v\n", sec)
+		items[ix] = &core.IndicesRequestItem{
+			ObjectID:   fmt.Sprintf("%s/%s-%d", filepath.Dir(file), filepath.Base(file), ix),
+			Category:   "plain-text",
+			Data:       sec,
+			Properties: fmt.Sprintf("{ \"file\": \"%s\" }", file),
+		}
+	}
+
+	return items, nil
+}
+
+func extractMardownFileByLine(file string) ([]*core.IndicesRequestItem, error) {
 	var sections []string
 
 	bytes, err := os.ReadFile(file)

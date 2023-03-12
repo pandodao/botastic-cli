@@ -14,6 +14,7 @@ import (
 var (
 	scanDir        string
 	fileType       string
+	scanMode       string
 	supportedTypes = []string{"txt", "md"}
 )
 
@@ -46,7 +47,11 @@ func NewCmdScan() *cobra.Command {
 				switch fileType {
 				case "md":
 					{
-						items, err = extractMardownFile(file)
+						extractFn := extractMardownFileByLine
+						if scanMode == "paragraph" {
+							extractFn = extractMardownFileByParagraph
+						}
+						items, err = extractFn(file)
 						if err != nil {
 							cmd.PrintErrln(err)
 							continue
@@ -73,6 +78,7 @@ func NewCmdScan() *cobra.Command {
 
 	cmd.Flags().StringVar(&scanDir, "dir", "", "the directory to be scanned for files.")
 	cmd.Flags().StringVar(&fileType, "type", "", "the file type to be scanned for.")
+	cmd.Flags().StringVar(&scanMode, "mode", "line", "the scan mode. supported modes: 'line', 'paragraph'.")
 
 	return cmd
 }
