@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/pandodao/botastic-cli/cmd/core"
+	"github.com/pandodao/botastic-go"
 
 	"github.com/spf13/cobra"
 )
@@ -40,10 +40,9 @@ func NewCmdScan() *cobra.Command {
 				os.Exit(-1)
 			}
 
-			req := &core.IndicesRequest{}
-			req.Items = make([]*core.IndicesRequestItem, 0)
+			req := botastic.CreateIndicesRequest{}
 			for _, file := range files {
-				var items []*core.IndicesRequestItem
+				var items []*botastic.CreateIndicesItem
 				switch fileType {
 				case "md":
 					{
@@ -109,7 +108,7 @@ func scanDirectory(root, fileType string) ([]string, error) {
 	return files, nil
 }
 
-func saveIndices(req *core.IndicesRequest) error {
+func saveIndices(req botastic.CreateIndicesRequest) error {
 	f, err := os.Create("indices.json")
 	if err != nil {
 		return err
