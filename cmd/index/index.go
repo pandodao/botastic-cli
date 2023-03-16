@@ -7,6 +7,7 @@ import (
 
 	"github.com/pandodao/botastic-cli/cmd/core"
 	"github.com/pandodao/botastic-go"
+	"github.com/pandodao/tokenizer-go"
 	"github.com/spf13/cobra"
 )
 
@@ -41,26 +42,41 @@ func NewCmdIndex() *cobra.Command {
 					os.Exit(-1)
 				}
 
-				// split indices into chunks
-				chunks := make([]botastic.CreateIndexesRequest, 0)
-				chunkSize := 128
-				for i := 0; i < len(indices.Items); i += chunkSize {
-					end := i + chunkSize
-					if end > len(indices.Items) {
-						end = len(indices.Items)
+				tokens := make([]int64, len(indices.Items))
+				for i, item := range indices.Items {
+					t := tokenizer.MustCalToken(item.Data)
+					if t > 3500 {
+						cmd.PrintErrf("data too long, objectId: %s\n", item.ObjectID)
+						os.Exit(-1)
 					}
-					chunks = append(chunks, botastic.CreateIndexesRequest{
-						Items: indices.Items[i:end],
-					})
+					tokens[i] = t
 				}
 
-				for ix, chunk := range chunks {
-					err := client.CreateIndexes(ctx, chunk)
-					if err != nil {
-						cmd.PrintErrln(err)
-						continue
+				req := botastic.CreateIndexesRequest{}
+				tokenSum, lastOne, start := int64(0), false, 0
+				for i := 0; i < len(indices.Items)+1; i++ {
+					token := int64(0)
+					if i < len(tokens) {
+						token = tokens[i]
 					}
-					cmd.Printf("📝 chunk %d, %d indices created.\n", ix+1, len(chunk.Items))
+					if tokenSum+token > 7000 || lastOne {
+						err := client.CreateIndexes(ctx, req)
+						if err != nil {
+							cmd.PrintErrln(err)
+							os.Exit(-1)
+						}
+						cmd.Printf("📝 chunk %d~%d, %d indices created, token: %d.\n", start, i-1, len(req.Items), tokenSum)
+						req.Items = []*botastic.CreateIndexesItem{}
+						tokenSum = 0
+						start = i
+					}
+					if !lastOne {
+						req.Items = append(req.Items, indices.Items[i])
+						tokenSum += token
+						if i == len(indices.Items)-1 {
+							lastOne = true
+						}
+					}
 				}
 
 				cmd.Printf("✅ done. %d indices created.\n", len(indices.Items))
