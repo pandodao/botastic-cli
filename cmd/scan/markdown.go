@@ -279,7 +279,7 @@ func yamlToJSON(yamlContent []byte) (string, error) {
 }
 
 func isTrivialSentence(sentence string) bool {
-	if len(sentence) < 3 {
+	if len(sentence) < 16 {
 		return true
 	}
 
