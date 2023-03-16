@@ -1,6 +1,8 @@
 package scan
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -8,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/pandodao/botastic-go"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -26,7 +29,20 @@ func extractMardownFileByParagraph(file string) ([]*botastic.CreateIndexesItem, 
 		return nil, err
 	}
 
-	lines := strings.Split(string(bytes), "\n")
+	frontmatter, content, err := extractFrontmatterAndContent(bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	properties := "{}"
+	if frontmatter != nil {
+		properties, err = yamlToJSON(frontmatter)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	lines := strings.Split(string(content), "\n")
 	ix := 0
 	section := ""
 	for ix < len(lines) {
@@ -76,12 +92,11 @@ func extractMardownFileByParagraph(file string) ([]*botastic.CreateIndexesItem, 
 
 	items := make([]*botastic.CreateIndexesItem, len(sections))
 	for ix, sec := range sections {
-		// fmt.Printf("sec: %v\n", sec)
 		items[ix] = &botastic.CreateIndexesItem{
 			ObjectID:   fmt.Sprintf("%s/%s-%d", filepath.Dir(file), filepath.Base(file), ix),
 			Category:   "plain-text",
 			Data:       sec,
-			Properties: fmt.Sprintf("{ \"file\": \"%s\" }", file),
+			Properties: properties,
 		}
 	}
 
@@ -96,7 +111,20 @@ func extractMardownFileByLine(file string) ([]*botastic.CreateIndexesItem, error
 		return nil, err
 	}
 
-	lines := strings.Split(string(bytes), "\n")
+	frontmatter, content, err := extractFrontmatterAndContent(bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	properties := "{}"
+	if frontmatter != nil {
+		properties, err = yamlToJSON(frontmatter)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	lines := strings.Split(string(content), "\n")
 	ix := 0
 	header := ""
 	for ix < len(lines) {
@@ -150,7 +178,7 @@ func extractMardownFileByLine(file string) ([]*botastic.CreateIndexesItem, error
 			ObjectID:   fmt.Sprintf("%s/%s-%d", filepath.Dir(file), filepath.Base(file), ix),
 			Category:   "plain-text",
 			Data:       sec,
-			Properties: fmt.Sprintf("{ \"file\": \"%s\" }", file),
+			Properties: properties,
 		}
 	}
 
@@ -213,4 +241,33 @@ func recognizeBlockType(line string) int {
 		return BlockTypeParagraph
 	}
 	return BlockTypeUnknown
+}
+
+func extractFrontmatterAndContent(content []byte) ([]byte, []byte, error) {
+	frontMatterPattern := regexp.MustCompile(`(?s)^---\n(.*?)\n---\n`)
+	match := frontMatterPattern.FindSubmatchIndex(content)
+
+	if len(match) < 4 {
+		return nil, content, nil
+	}
+
+	frontMatter := content[match[2]:match[3]]
+	remainingContent := content[match[1]:]
+
+	return frontMatter, bytes.TrimSpace(remainingContent), nil
+}
+
+func yamlToJSON(yamlContent []byte) (string, error) {
+	var yamlObj map[string]interface{}
+	err := yaml.Unmarshal(yamlContent, &yamlObj)
+	if err != nil {
+		return "", fmt.Errorf("error unmarshaling YAML: %v", err)
+	}
+
+	jsonContent, err := json.Marshal(yamlObj)
+	if err != nil {
+		return "", fmt.Errorf("error marshaling JSON: %v", err)
+	}
+
+	return string(jsonContent), nil
 }

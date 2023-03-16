@@ -1,3 +1,9 @@
+---
+title: "Bitcoin"
+date: "2019/04/01"
+url: "https://vitalik.ca/general/2019/04/01/cantor.html"
+---
+
 # Bitcoin
 
 Bitcoin (abbreviation: BTC or XBT; sign: ₿) is a protocol which implements a highly available, public, permanent, and decentralized ledger. In order to add to the ledger, a user must prove they control an entry in the ledger. The protocol specifies that the entry indicates an amount of a token, bitcoin with a minuscule b. The user can update the ledger, assigning some of their bitcoin to another entry in the ledger. Because the token has characteristics of money, it can be thought of as a digital currency.
