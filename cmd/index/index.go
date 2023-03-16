@@ -59,7 +59,7 @@ func NewCmdIndex() *cobra.Command {
 					if i < len(tokens) {
 						token = tokens[i]
 					}
-					if tokenSum+token > 7000 || lastOne {
+					if tokenSum+token > 8100 || lastOne {
 						err := client.CreateIndexes(ctx, req)
 						if err != nil {
 							cmd.PrintErrln(err)
