@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"unicode"
 
 	"github.com/pandodao/botastic-go"
 	"gopkg.in/yaml.v2"
@@ -90,14 +91,17 @@ func extractMardownFileByParagraph(file string) ([]*botastic.CreateIndexesItem, 
 		sections = append(sections, section)
 	}
 
-	items := make([]*botastic.CreateIndexesItem, len(sections))
+	items := make([]*botastic.CreateIndexesItem, 0)
 	for ix, sec := range sections {
-		items[ix] = &botastic.CreateIndexesItem{
+		if isTrivialSentence(sec) {
+			continue
+		}
+		items = append(items, &botastic.CreateIndexesItem{
 			ObjectID:   fmt.Sprintf("%s/%s-%d", filepath.Dir(file), filepath.Base(file), ix),
 			Category:   "plain-text",
 			Data:       sec,
 			Properties: properties,
-		}
+		})
 	}
 
 	return items, nil
@@ -171,15 +175,17 @@ func extractMardownFileByLine(file string) ([]*botastic.CreateIndexesItem, error
 		ix += 1
 	}
 
-	items := make([]*botastic.CreateIndexesItem, len(sections))
+	items := make([]*botastic.CreateIndexesItem, 0)
 	for ix, sec := range sections {
-		// fmt.Printf("sec: %v\n", sec)
-		items[ix] = &botastic.CreateIndexesItem{
+		if isTrivialSentence(sec) {
+			continue
+		}
+		items = append(items, &botastic.CreateIndexesItem{
 			ObjectID:   fmt.Sprintf("%s/%s-%d", filepath.Dir(file), filepath.Base(file), ix),
 			Category:   "plain-text",
 			Data:       sec,
 			Properties: properties,
-		}
+		})
 	}
 
 	return items, nil
@@ -270,4 +276,19 @@ func yamlToJSON(yamlContent []byte) (string, error) {
 	}
 
 	return string(jsonContent), nil
+}
+
+func isTrivialSentence(sentence string) bool {
+	if len(sentence) < 3 {
+		return true
+	}
+
+	// if sentence contains only symbols and numbers, it is trivial
+	for _, r := range sentence {
+		if !unicode.IsSymbol(r) && !unicode.IsNumber(r) && !unicode.IsSpace(r) && !unicode.IsPunct(r) {
+			return false
+		}
+	}
+
+	return true
 }
