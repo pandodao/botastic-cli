@@ -14,36 +14,36 @@ import (
 var (
 	action      string
 	query       string
-	indicesfile string
+	indexesfile string
 )
 
 func NewCmdIndex() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "index --act <action> [options]",
-		Short: "create or search indices",
+		Short: "create or search indexes",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			client := ctx.Value(core.CtxClient{}).(*botastic.Client)
 			if action == "create" {
-				if indicesfile == "" {
+				if indexesfile == "" {
 					cmd.PrintErrln("missing required flag: --file")
 					os.Exit(-1)
 				}
 
-				buf, err := os.ReadFile(indicesfile)
+				buf, err := os.ReadFile(indexesfile)
 				if err != nil {
 					cmd.PrintErrln(err)
 					os.Exit(-1)
 				}
 
-				indices := &botastic.CreateIndexesRequest{}
-				if err := json.Unmarshal(buf, &indices); err != nil {
+				indexes := &botastic.CreateIndexesRequest{}
+				if err := json.Unmarshal(buf, &indexes); err != nil {
 					cmd.PrintErrln(err)
 					os.Exit(-1)
 				}
 
-				tokens := make([]int64, len(indices.Items))
-				for i, item := range indices.Items {
+				tokens := make([]int64, len(indexes.Items))
+				for i, item := range indexes.Items {
 					t := tokenizer.MustCalToken(item.Data)
 					if t > 3500 {
 						cmd.PrintErrf("data too long, objectId: %s\n", item.ObjectID)
@@ -54,7 +54,7 @@ func NewCmdIndex() *cobra.Command {
 
 				req := botastic.CreateIndexesRequest{}
 				tokenSum, lastOne, start := int64(0), false, 0
-				for i := 0; i < len(indices.Items)+1; i++ {
+				for i := 0; i < len(indexes.Items)+1; i++ {
 					token := int64(0)
 					if i < len(tokens) {
 						token = tokens[i]
@@ -65,21 +65,21 @@ func NewCmdIndex() *cobra.Command {
 							cmd.PrintErrln(err)
 							os.Exit(-1)
 						}
-						cmd.Printf("📝 chunk %d~%d, %d indices created, token: %d.\n", start, i-1, len(req.Items), tokenSum)
+						cmd.Printf("📝 chunk %d~%d, %d indexes created, token: %d.\n", start, i-1, len(req.Items), tokenSum)
 						req.Items = []*botastic.CreateIndexesItem{}
 						tokenSum = 0
 						start = i
 					}
 					if !lastOne {
-						req.Items = append(req.Items, indices.Items[i])
+						req.Items = append(req.Items, indexes.Items[i])
 						tokenSum += token
-						if i == len(indices.Items)-1 {
+						if i == len(indexes.Items)-1 {
 							lastOne = true
 						}
 					}
 				}
 
-				cmd.Printf("✅ done. %d indices created.\n", len(indices.Items))
+				cmd.Printf("✅ done. %d indexes created.\n", len(indexes.Items))
 
 			} else if action == "search" {
 				if query == "" {
@@ -108,7 +108,7 @@ func NewCmdIndex() *cobra.Command {
 
 	cmd.Flags().StringVar(&action, "act", "", "action to perform. [create, search]")
 	cmd.Flags().StringVar(&query, "query", "", "query to search. Only valid when action is search")
-	cmd.Flags().StringVar(&indicesfile, "file", "", "indices file path. Only valid when action is create")
+	cmd.Flags().StringVar(&indexesfile, "file", "", "indexes file path. Only valid when action is create")
 
 	return cmd
 }

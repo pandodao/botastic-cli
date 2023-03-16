@@ -21,7 +21,7 @@ var (
 func NewCmdScan() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "scan --dir <message> --type <type>",
-		Short: "scan a directory for files with a specific type and create indices for them",
+		Short: "scan a directory for files with a specific type and create indexes for them",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if scanDir == "" {
 				cmd.PrintErrln("missing required flag: --dir")
@@ -61,16 +61,16 @@ func NewCmdScan() *cobra.Command {
 					}
 				}
 
-				cmd.Printf("🔍 scan file: %s, %d indices\n", file, len(items))
+				cmd.Printf("🔍 scan file: %s, %d indexes\n", file, len(items))
 				req.Items = append(req.Items, items...)
 			}
 
-			if err = saveIndices(req); err != nil {
+			if err = saveIndexes(req); err != nil {
 				cmd.PrintErrln(err)
 				os.Exit(-1)
 			}
 
-			cmd.Printf("✅ done. save to file: %s\n", "indices.json")
+			cmd.Printf("✅ done. save to file: %s\n", "indexes.json")
 			return nil
 		},
 	}
@@ -108,8 +108,8 @@ func scanDirectory(root, fileType string) ([]string, error) {
 	return files, nil
 }
 
-func saveIndices(req botastic.CreateIndexesRequest) error {
-	f, err := os.Create("indices.json")
+func saveIndexes(req botastic.CreateIndexesRequest) error {
+	f, err := os.Create("indexes.json")
 	if err != nil {
 		return err
 	}

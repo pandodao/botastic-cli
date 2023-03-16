@@ -17,7 +17,7 @@ export BOTASTIC_SECRET=YOUR_APP_SECRET
 
 ## Usage
 
-### Build Indices from Markdown files
+### Build indexes from Markdown files
 
 ```bash
 botastic-cli scan --dir ./docs --type md --mode paragraph
@@ -27,12 +27,12 @@ in which,
 
 - `--dir` is the directory of your markdown files
 - `--type` is the type of your markdown files, currently only `md` is supported
-- `--mode` is the mode of building indices, currently supports `paragraph` and `line`
+- `--mode` is the mode of building indexes, currently supports `paragraph` and `line`
 
-### Create Indices 
+### Create indexes 
 
 ```bash
-botastic-cli index --act create --file ./indices.json
+botastic-cli index --act create --file ./indexes.json
 ```
 
 ### Query
