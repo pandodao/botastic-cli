@@ -3,7 +3,7 @@ module github.com/pandodao/botastic-cli
 go 1.20
 
 require (
-	github.com/pandodao/botastic-go v0.0.0-20230309043034-bf71d0387d4c
+	github.com/pandodao/botastic-go v0.0.0-20230315152902-181531115667
 	github.com/spf13/cobra v1.6.1
 )
 

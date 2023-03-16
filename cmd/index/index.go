@@ -35,27 +35,27 @@ func NewCmdIndex() *cobra.Command {
 					os.Exit(-1)
 				}
 
-				indices := &botastic.CreateIndicesRequest{}
+				indices := &botastic.CreateIndexesRequest{}
 				if err := json.Unmarshal(buf, &indices); err != nil {
 					cmd.PrintErrln(err)
 					os.Exit(-1)
 				}
 
 				// split indices into chunks
-				chunks := make([]botastic.CreateIndicesRequest, 0)
+				chunks := make([]botastic.CreateIndexesRequest, 0)
 				chunkSize := 128
 				for i := 0; i < len(indices.Items); i += chunkSize {
 					end := i + chunkSize
 					if end > len(indices.Items) {
 						end = len(indices.Items)
 					}
-					chunks = append(chunks, botastic.CreateIndicesRequest{
+					chunks = append(chunks, botastic.CreateIndexesRequest{
 						Items: indices.Items[i:end],
 					})
 				}
 
 				for ix, chunk := range chunks {
-					err := client.CreateIndices(ctx, chunk)
+					err := client.CreateIndexes(ctx, chunk)
 					if err != nil {
 						cmd.PrintErrln(err)
 						continue
@@ -71,7 +71,7 @@ func NewCmdIndex() *cobra.Command {
 					os.Exit(-1)
 				}
 
-				resp, err := client.SearchIndices(ctx, botastic.SearchIndicesRequest{
+				resp, err := client.SearchIndexes(ctx, botastic.SearchIndexesRequest{
 					Keywords: query,
 					N:        3,
 				})
@@ -79,7 +79,7 @@ func NewCmdIndex() *cobra.Command {
 					cmd.PrintErrln(err)
 					os.Exit(-1)
 				}
-				for ix, item := range resp.Indices {
+				for ix, item := range resp.Items {
 					cmd.Printf("💡 Result #%d (%f):\n%s\nprop: %s\n\n", ix+1, item.Score, strings.TrimSpace(item.Data), item.Properties)
 				}
 			} else {
