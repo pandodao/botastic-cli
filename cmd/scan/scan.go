@@ -40,9 +40,9 @@ func NewCmdScan() *cobra.Command {
 				os.Exit(-1)
 			}
 
-			req := botastic.CreateIndicesRequest{}
+			req := botastic.CreateIndexesRequest{}
 			for _, file := range files {
-				var items []*botastic.CreateIndicesItem
+				var items []*botastic.CreateIndexesItem
 				switch fileType {
 				case "md":
 					{
@@ -108,7 +108,7 @@ func scanDirectory(root, fileType string) ([]string, error) {
 	return files, nil
 }
 
-func saveIndices(req botastic.CreateIndicesRequest) error {
+func saveIndices(req botastic.CreateIndexesRequest) error {
 	f, err := os.Create("indices.json")
 	if err != nil {
 		return err

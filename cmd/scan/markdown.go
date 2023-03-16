@@ -18,7 +18,7 @@ const (
 	BlockTypeUnknown
 )
 
-func extractMardownFileByParagraph(file string) ([]*botastic.CreateIndicesItem, error) {
+func extractMardownFileByParagraph(file string) ([]*botastic.CreateIndexesItem, error) {
 	var sections []string
 
 	bytes, err := os.ReadFile(file)
@@ -74,10 +74,10 @@ func extractMardownFileByParagraph(file string) ([]*botastic.CreateIndicesItem, 
 		sections = append(sections, section)
 	}
 
-	items := make([]*botastic.CreateIndicesItem, len(sections))
+	items := make([]*botastic.CreateIndexesItem, len(sections))
 	for ix, sec := range sections {
 		// fmt.Printf("sec: %v\n", sec)
-		items[ix] = &botastic.CreateIndicesItem{
+		items[ix] = &botastic.CreateIndexesItem{
 			ObjectID:   fmt.Sprintf("%s/%s-%d", filepath.Dir(file), filepath.Base(file), ix),
 			Category:   "plain-text",
 			Data:       sec,
@@ -88,7 +88,7 @@ func extractMardownFileByParagraph(file string) ([]*botastic.CreateIndicesItem, 
 	return items, nil
 }
 
-func extractMardownFileByLine(file string) ([]*botastic.CreateIndicesItem, error) {
+func extractMardownFileByLine(file string) ([]*botastic.CreateIndexesItem, error) {
 	var sections []string
 
 	bytes, err := os.ReadFile(file)
@@ -143,10 +143,10 @@ func extractMardownFileByLine(file string) ([]*botastic.CreateIndicesItem, error
 		ix += 1
 	}
 
-	items := make([]*botastic.CreateIndicesItem, len(sections))
+	items := make([]*botastic.CreateIndexesItem, len(sections))
 	for ix, sec := range sections {
 		// fmt.Printf("sec: %v\n", sec)
-		items[ix] = &botastic.CreateIndicesItem{
+		items[ix] = &botastic.CreateIndexesItem{
 			ObjectID:   fmt.Sprintf("%s/%s-%d", filepath.Dir(file), filepath.Base(file), ix),
 			Category:   "plain-text",
 			Data:       sec,

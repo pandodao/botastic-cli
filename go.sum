@@ -3,8 +3,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/inconshreveable/mousetrap v1.0.1/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
-github.com/pandodao/botastic-go v0.0.0-20230309043034-bf71d0387d4c h1:GZHplZtihL3mBIpzFAlPUqVqwZRpgzYd/+kkPAw3ac4=
-github.com/pandodao/botastic-go v0.0.0-20230309043034-bf71d0387d4c/go.mod h1:ADFMMhpKA6nVFk0kinNpaNtzf8c6WG/xecHRj4YzF14=
+github.com/pandodao/botastic-go v0.0.0-20230315152902-181531115667 h1:pY3f8S1bfqWIDT6QG5nqIURoQD2elLe30HUyWjf6lVE=
+github.com/pandodao/botastic-go v0.0.0-20230315152902-181531115667/go.mod h1:ADFMMhpKA6nVFk0kinNpaNtzf8c6WG/xecHRj4YzF14=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/spf13/cobra v1.6.1 h1:o94oiPyS4KD1mPy2fmcYYHHfCxLqYjJOhGsCHFZtEzA=
