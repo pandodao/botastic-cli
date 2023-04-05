@@ -1,0 +1,18 @@
+Issue type: Bug
+Summary: Unable to submit the contact form on the website
+Description: When a user tries to submit the contact form on the website, the form does not get submitted, and an error message is displayed on the page. This issue is occurring consistently, and it is affecting all users who try to use the contact form.
+Steps to reproduce:
+  1. Go to the website's Contact Us page.
+  2. Fill in the contact form with valid details.
+  3. Click on the "Submit" button.
+Expected result: The contact form should be submitted successfully, and the user should see a confirmation message on the page.
+Actual result: The contact form does not get submitted, and an error message is displayed on the page.
+Environment:
+  - Operating system: Windows 10
+  - Browser: Google Chrome v.90
+  - Website version: 1.2.3
+Attachments: None
+Priority: Medium
+Assignee: @JohnDoe
+Reporter: @WillSmith
+Labels: Bug, Contact Form, Website

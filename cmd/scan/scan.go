@@ -58,6 +58,11 @@ func NewCmdScan() *cobra.Command {
 					}
 				case "txt":
 					{
+						items, err = extractEntrieFile(file)
+						if err != nil {
+							cmd.PrintErrln(err)
+							continue
+						}
 					}
 				}
 

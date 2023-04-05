@@ -1,0 +1,16 @@
+Issue type: Task
+Summary: Update website content for new product launch
+Description: The company is launching a new product next month, and we need to update the website content to reflect the new product's features and benefits. The task involves creating new pages, updating existing pages, and adding new product images to the website.
+Steps to complete:
+  1. Review the new product information and marketing materials provided by the product team.
+  2. Create new pages on the website to showcase the new product.
+  3. Update existing website pages to include information about the new product.
+  4. Add new product images to the website's media library and update them on the relevant pages.
+  5. Test the new pages and ensure that they are working as expected.
+Expected timeline: The task needs to be completed within two weeks before the new product launch.
+Environment: N/A
+Attachments: New product information and marketing materials
+Priority: High
+Assignee: @Lucy
+Reporter: @Luck
+Labels: Website, Content, New Product
