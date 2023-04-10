@@ -198,8 +198,8 @@ func removeMarkdownSyntax(text string) string {
 	italicRegex := regexp.MustCompile("_(.*?)_")
 	strikethroughRegex := regexp.MustCompile("~~(.*?)~~")
 	codeRegex := regexp.MustCompile("`(.*?)`")
-	linkRegex := regexp.MustCompile("\\[(.*?)\\]\\((.*?)\\)")
-	codeBlockRegex := regexp.MustCompile("```(.*?)```")
+	// linkRegex := regexp.MustCompile("\\[(.*?)\\]\\((.*?)\\)")
+	// codeBlockRegex := regexp.MustCompile("```(.*?)```")
 	quoteBlockRegex := regexp.MustCompile("> (.*?)")
 	htmlRegex := regexp.MustCompile("<.*?>")
 
@@ -216,10 +216,10 @@ func removeMarkdownSyntax(text string) string {
 	text = codeRegex.ReplaceAllString(text, "$1")
 
 	// Replace link syntax with plain text
-	text = linkRegex.ReplaceAllString(text, "$1")
+	// text = linkRegex.ReplaceAllString(text, "$1")
 
 	// Replace code block syntax with plain text
-	text = codeBlockRegex.ReplaceAllString(text, "$1")
+	// text = codeBlockRegex.ReplaceAllString(text, "$1")
 
 	// Replace quote block syntax with plain text
 	text = quoteBlockRegex.ReplaceAllString(text, "$1")
